@@ -1,70 +1,44 @@
-/* 1. รีเซ็ตค่าเริ่มต้น (Reset CSS) */
-*, *::before, *::after {
-  box-sizing: border-box; /* ให้ padding ไม่ดันขนาดกล่องให้เพี้ยน */
-  margin: 0;
-  padding: 0;
+/* ... (โค้ดเดิมด้านบน) ... */
+
+/* --- Animation Classes --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* 2. ตั้งค่า Root (ฟอนต์และสี) */
-:root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  /* บังคับใช้ธีมสว่าง (Light Mode) ตาม Figma */
-  color: #333333;          /* สีตัวอักษรเทาเข้ม */
-  background-color: #ffffff; /* สีพื้นหลังขาว */
-
-  /* การแสดงผลฟอนต์ให้คมชัด */
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* 3. แก้ไข Body (จุดสำคัญที่ทำให้หน้าเว็บเต็มจอ) */
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;        /* กว้างเต็มจอ */
-  min-height: 100vh;  /* สูงเต็มจอ */
-  display: block;     /* ⚠️ เปลี่ยนจาก flex เป็น block เพื่อเลิกจัดกึ่งกลาง */
-  overflow-x: hidden; /* ป้องกันสกรอลบาร์แนวนอนเกินความจำเป็น */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/* 4. ตั้งค่า Link */
-a {
-  font-weight: 500;
-  color: inherit;     /* ให้สีตามพ่อแม่ หรือกำหนดใหม่ใน component */
-  text-decoration: none;
-  transition: color 0.25s;
+.anim-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
-a:hover {
-  color: #2E8B57; /* สีเขียวเมื่อเอาเมาส์ชี้ */
+.anim-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
 }
 
-/* 5. ตั้งค่าปุ่มพื้นฐาน (Global Button Reset) */
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: opacity 0.25s;
+.anim-scale-in {
+  animation: scaleIn 0.4s ease-out forwards;
 }
 
-button:hover {
-  opacity: 0.9;
+/* Hover Effects */
+.hover-scale {
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.hover-scale:hover {
+  transform: translateY(-5px) scale(1.02);
 }
 
-button:focus,
-button:focus-visible {
-  outline: 2px solid #2E8B57; /* เส้นขอบเวลาใช้ Tab */
+.hover-shadow {
+  transition: box-shadow 0.3s ease;
 }
-
-/* 6. ลบ Media Query Dark Mode ออก */
-/* เราลบส่วน @media (prefers-color-scheme: dark) ออก 
-   เพื่อให้หน้าเว็บเป็นสีขาวตลอดเวลา ตามดีไซน์ StallFinder */
+.hover-shadow:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
