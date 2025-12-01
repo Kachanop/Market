@@ -1,0 +1,48 @@
+/* 1. รีเซ็ตการตั้งค่ากล่องข้อความ (Box Model Reset) */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2. แก้ไข #root ที่เคยเป็นปัญหา (ปลดล็อกความกว้าง) */
+#root {
+  width: 100%;           /* กว้างเต็ม 100% */
+  max-width: 100%;       /* ลบ max-width 1280px เดิมทิ้ง */
+  margin: 0;             /* ลบ margin auto ที่ทำให้อยู่ตรงกลาง */
+  padding: 0;            /* ลบ padding 2rem เดิม */
+  text-align: left;      /* ให้เนื้อหาชิดซ้ายตามปกติ (เดิมเป็น center) */
+  min-height: 100vh;     /* สูงเต็มจอ */
+  display: block;        /* บังคับให้แสดงผลแบบ Block ไม่ใช่ Flex */
+}
+
+/* 3. ตั้งค่าพื้นฐานของหน้าเว็บ (Global Styles) */
+body {
+  background-color: #FFFFFF; /* สีพื้นหลังขาว หรือเทาอ่อน #F9FAFB */
+  color: #1F2937;            /* สีตัวอักษรเทาเข้ม (อ่านง่ายกว่าดำสนิท) */
+  font-family: 'Inter', 'Sarabun', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased; /* ทำให้ตัวหนังสือคมชัดบน Mac/iOS */
+}
+
+/* 4. สไตล์เพิ่มเติมสำหรับลิงก์และปุ่ม (Optional) */
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+/* 5. Utility Class สำหรับ Container (ถ้าต้องการให้เนื้อหาไม่ชิดขอบจอเกินไป) */
+.container {
+  width: 100%;
+  max-width: 1200px; /* จำกัดความกว้างเนื้อหาไว้ที่ 1200px ตรงกลาง (เหมือนเว็บทั่วไป) */
+  margin: 0 auto;
+  padding: 0 20px;
+}
