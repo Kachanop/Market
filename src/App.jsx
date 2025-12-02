@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import AppRouter from './Router'; // ✅ เรียกใช้ Router ที่เราแยกไว้
+import AppRouter from './Router';
 
 import { initialUsers, initialBookings } from './data/userData';
 import { initialMarkets } from './data/marketData';
 
 function App() {
-  // --- 1. Database จำลอง ---
+  // --- 1. Database จำลอง (Load from Local Storage) ---
   const [users, setUsers] = useState(() => {
     const saved = localStorage.getItem('app_users');
     return saved ? JSON.parse(saved) : initialUsers;
   });
 
+  // ใช้ Session Storage สำหรับ Current User เพื่อให้ Login ค้างอยู่เฉพาะ Session นี้
+  // หรือใช้ Local Storage ถ้าอยากให้ "Remember Me"
   const [user, setUser] = useState(() => {
-    const saved = sessionStorage.getItem('app_current_user');
+    const saved = localStorage.getItem('app_current_user'); // เปลี่ยนเป็น Local Storage เพื่อความสะดวก
     return saved ? JSON.parse(saved) : null;
   });
 
@@ -27,12 +29,12 @@ function App() {
     return saved ? JSON.parse(saved) : initialBookings;
   });
 
-  // --- 2. Auto-save Effects ---
+  // --- 2. Auto-save Effects (Save to Local Storage) ---
   useEffect(() => { localStorage.setItem('app_users', JSON.stringify(users)); }, [users]);
   
   useEffect(() => {
-    if (user) sessionStorage.setItem('app_current_user', JSON.stringify(user));
-    else sessionStorage.removeItem('app_current_user');
+    if (user) localStorage.setItem('app_current_user', JSON.stringify(user));
+    else localStorage.removeItem('app_current_user');
   }, [user]);
 
   useEffect(() => { localStorage.setItem('app_markets', JSON.stringify(markets)); }, [markets]);
@@ -40,13 +42,11 @@ function App() {
 
   const handleLogout = () => {
     setUser(null);
-    sessionStorage.removeItem('app_current_user');
+    localStorage.removeItem('app_current_user');
   };
 
   return (
     <Router>
-      {/* ✅ ส่ง Props ทุกอย่างไปให้ AppRouter จัดการ */}
-      {/* ❌ ห้ามใส่ MainLayout ตรงนี้เด็ดขาด เพราะใน Router.jsx ใส่ไว้ให้แล้ว */}
       <AppRouter 
         user={user}
         users={users}

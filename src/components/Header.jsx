@@ -1,69 +1,189 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 const Header = ({ user, onLogout }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isAdmin = user?.role === 'admin';
+  const [scrolled, setScrolled] = useState(false);
 
-  // Theme Config
-  const theme = {
-    bg: isAdmin 
-      ? 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)' 
-      : 'linear-gradient(90deg, #2E8B57 0%, #3CB371 100%)',
-    shadow: isAdmin ? '0 4px 10px rgba(0,0,0,0.3)' : '0 4px 15px rgba(46, 139, 87, 0.3)',
-    btnColor: isAdmin ? '#ff4d4d' : '#fff',
-    btnBg: isAdmin ? 'white' : 'rgba(255,255,255,0.2)',
-    btnText: isAdmin ? '#1e3c72' : 'white'
-  };
+  // Detect Scroll
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Navigation Config
+  const navItems = isAdmin ? [
+    { to: '/admin', label: 'Dashboard', icon: '📊' },
+    { to: '/admin/manage-market', label: 'Manage', icon: '⚙️' },
+    { to: '/admin/check-slip', label: 'Slips', icon: '💰' },
+  ] : [
+    { to: '/', label: 'Home', icon: '🏠' },
+    ...(user ? [{ to: '/customer/my-bookings', label: 'My Bookings', icon: '🎟️' }] : [])
+  ];
 
   const styles = {
     header: {
-      background: theme.bg, color: 'white', padding: '12px 30px',
-      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      boxShadow: theme.shadow, position: 'sticky', top: 0, zIndex: 1000, transition: 'all 0.3s ease'
+      position: 'sticky',
+      top: 0,
+      zIndex: 1000,
+      padding: '12px 24px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      transition: 'all 0.4s ease',
+      background: scrolled ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.6)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: scrolled ? '1px solid rgba(0,0,0,0.05)' : '1px solid transparent',
+      boxShadow: scrolled ? '0 4px 30px rgba(0, 0, 0, 0.03)' : 'none',
     },
-    logo: { fontSize: '1.6rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', textShadow: '0 2px 4px rgba(0,0,0,0.2)' },
-    userInfo: { display: 'flex', alignItems: 'center', gap: '20px' },
-    userDetails: { textAlign: 'right', fontSize: '0.9rem', lineHeight: '1.2' },
-    badge: { fontSize: '0.7rem', backgroundColor: isAdmin ? '#FFD700' : 'rgba(255,255,255,0.9)', color: '#333', padding: '2px 8px', borderRadius: '12px', fontWeight: '800', marginLeft: '5px', letterSpacing: '0.5px', textTransform: 'uppercase' },
-    
-    // ปุ่มต่างๆ
-    actionBtn: { backgroundColor: theme.btnBg, color: theme.btnText, border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold', transition: '0.3s', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '5px' },
-    loginBtn: { backgroundColor: 'white', color: '#2E8B57', border: 'none', padding: '8px 20px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold', marginRight: '10px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' },
-    registerBtn: { backgroundColor: 'rgba(255,255,255,0.2)', color: 'white', border: '1px solid rgba(255,255,255,0.5)', padding: '7px 19px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }
-  };
-
-  const handleLogoClick = () => {
-    if (isAdmin) navigate('/admin');
-    else navigate('/');
+    // Left: Logo
+    leftSection: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      cursor: 'pointer',
+    },
+    // Right: Nav + User
+    rightSection: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '24px',
+    },
+    logoIcon: {
+      width: '36px',
+      height: '36px',
+      borderRadius: '10px',
+      background: isAdmin ? 'linear-gradient(135deg, #FF3B30, #FF9500)' : 'linear-gradient(135deg, #007AFF, #5AC8FA)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontSize: '1.2rem',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+    },
+    logoText: {
+      fontSize: '1.1rem',
+      fontWeight: '700',
+      letterSpacing: '-0.5px',
+      color: '#1C1C1E',
+    },
+    nav: {
+      display: 'flex',
+      gap: '8px',
+    },
+    navItem: (isActive) => ({
+      textDecoration: 'none',
+      color: isActive ? '#1C1C1E' : '#8E8E93',
+      fontWeight: isActive ? '600' : '500',
+      fontSize: '0.9rem',
+      padding: '8px 16px',
+      borderRadius: '20px',
+      background: isActive ? 'rgba(0,0,0,0.06)' : 'transparent',
+      transition: 'all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px'
+    }),
+    userActions: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      borderLeft: '1px solid rgba(0,0,0,0.1)',
+      paddingLeft: '16px'
+    },
+    userChip: {
+      padding: '4px 12px 4px 4px',
+      background: 'rgba(0,0,0,0.04)',
+      borderRadius: '50px',
+      fontSize: '0.85rem',
+      fontWeight: '600',
+      color: '#3A3A3C',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      border: '1px solid rgba(0,0,0,0.02)'
+    },
+    avatar: {
+      width: '28px',
+      height: '28px',
+      borderRadius: '50%',
+      background: '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '0.9rem',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+      color: isAdmin ? '#FF3B30' : '#007AFF'
+    },
+    logoutBtn: {
+      background: 'transparent',
+      border: 'none',
+      color: '#FF3B30',
+      fontWeight: '600',
+      cursor: 'pointer',
+      fontSize: '0.85rem',
+      padding: '8px 12px',
+      borderRadius: '12px',
+      transition: 'background 0.2s',
+    }
   };
 
   return (
     <header style={styles.header} className="anim-slide-up">
-      <div style={styles.logo} onClick={handleLogoClick}>
-        <span style={{fontSize: '2rem'}}>{isAdmin ? '🛡️' : '🏪'}</span>
-        <div style={{display:'flex', flexDirection:'column'}}>
-          <span>{isAdmin ? 'Market Admin' : 'StallFinder'}</span>
-          <span style={{fontSize: '0.7rem', fontWeight: 'normal', opacity: 0.9}}>
-            {isAdmin ? 'ระบบจัดการตลาด' : 'จองล็อกตลาดง่ายๆ'}
-          </span>
+      <div style={styles.leftSection} onClick={() => navigate(isAdmin ? '/admin' : '/')}>
+        <div style={styles.logoIcon}>
+          {isAdmin ? '🛡️' : '🛍️'}
+        </div>
+        <div>
+          <div style={styles.logoText}>MarketOS <span style={{opacity:0.4, fontWeight:400}}>26</span></div>
         </div>
       </div>
 
-      {user ? (
-        <div style={styles.userInfo}>
-          <div style={styles.userDetails}>
-            <div style={{fontWeight: '600'}}>{user.name || user.email}</div>
-            <div style={{ marginTop: '2px' }}><span style={styles.badge}>{user.role}</span></div>
-          </div>
-          <button style={styles.actionBtn} onClick={onLogout} className="hover-scale">↪ ออกจากระบบ</button>
+      <div style={styles.rightSection}>
+        <nav style={styles.nav}>
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.to || (item.to !== '/' && item.to !== '/admin' && location.pathname.startsWith(item.to));
+            return (
+              <Link key={item.to} to={item.to} style={styles.navItem(isActive)} className="hover-scale">
+                <span>{item.icon}</span>
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div style={styles.userActions}>
+          {user ? (
+            <>
+              <div style={styles.userChip}>
+                <div style={styles.avatar}>{user.name.charAt(0)}</div>
+                <span>{user.name.split(' ')[0]}</span>
+              </div>
+              <button 
+                style={styles.logoutBtn} 
+                onClick={onLogout}
+                onMouseEnter={(e) => e.target.style.background = 'rgba(255, 59, 48, 0.1)'}
+                onMouseLeave={(e) => e.target.style.background = 'transparent'}
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn-ios" style={{background:'transparent', color:'#007AFF', padding:'8px 16px', fontSize:'0.9rem'}} onClick={() => navigate('/login')}>
+                Log In
+              </button>
+              <button className="btn-ios btn-primary" style={{padding:'8px 20px', fontSize:'0.9rem'}} onClick={() => navigate('/register')}>
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
-      ) : (
-        <div style={styles.userInfo}>
-           <button style={styles.loginBtn} onClick={() => navigate('/login')} className="hover-scale">เข้าสู่ระบบ</button>
-           <button style={styles.registerBtn} onClick={() => navigate('/register')} className="hover-scale">สมัครสมาชิก</button>
-        </div>
-      )}
+      </div>
     </header>
   );
 };

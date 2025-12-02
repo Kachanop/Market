@@ -9,46 +9,73 @@ export default function Register({ users, setUsers }) {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) return alert("❌ รหัสผ่านไม่ตรงกัน");
-    if (users.find(u => u.email === formData.email)) return alert("❌ อีเมลนี้ถูกใช้งานแล้ว");
+    if (formData.password !== formData.confirmPassword) return alert("❌ Passwords do not match");
+    if (users.find(u => u.email === formData.email)) return alert("❌ Email already exists");
 
-    // ถ้าอีเมลเป็น @admin.com ให้เป็น Admin ตั้งแต่เกิด (Optional)
     const role = formData.email.endsWith('@admin.com') ? 'admin' : 'customer';
-
-    const newUser = { 
-      id: Date.now(), 
-      name: formData.name, 
-      email: formData.email, 
-      password: formData.password, 
-      role: role 
-    };
+    const newUser = { id: Date.now(), ...formData, role };
 
     setUsers([...users, newUser]);
-    alert("✅ สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ");
+    alert("✅ Account created successfully!");
     navigate('/login');
   };
 
   const styles = {
-    container: { display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f0f2f5', fontFamily: "'Inter', sans-serif" },
-    card: { backgroundColor: 'white', padding: '40px', borderRadius: '15px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', width: '100%', maxWidth: '400px', textAlign: 'center' },
-    title: { color: '#2E8B57', marginBottom: '20px', fontSize: '1.8rem', fontWeight: 'bold' },
-    input: { width: '100%', padding: '12px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem', outline: 'none' },
-    button: { width: '100%', padding: '12px', backgroundColor: '#2E8B57', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', transition: '0.3s', marginTop: '10px' },
-    link: { display: 'block', marginTop: '15px', color: '#666', fontSize: '0.9rem', textDecoration: 'none' }
+    container: {
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#F2F2F7',
+      padding: '20px',
+    },
+    card: {
+      width: '100%',
+      maxWidth: '400px',
+      padding: '40px',
+      background: 'white',
+      borderRadius: '32px',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
+      textAlign: 'center',
+    },
+    title: { fontSize: '2rem', fontWeight: '800', marginBottom: '8px', color: '#1C1C1E' },
+    subtitle: { color: '#8E8E93', marginBottom: '32px' },
+    formGroup: { marginBottom: '16px', textAlign: 'left' },
+    label: { display:'block', fontSize:'0.9rem', fontWeight:'600', marginBottom:'8px', color:'#3A3A3C', marginLeft:'4px' },
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.card} className="anim-slide-up">
-        <h2 style={styles.title}>📝 สมัครสมาชิก</h2>
+      <div style={styles.card} className="anim-scale">
+        <h2 style={styles.title}>Create Account</h2>
+        <p style={styles.subtitle}>Join MarketOS today</p>
+
         <form onSubmit={handleRegister}>
-          <input name="name" placeholder="ชื่อ-นามสกุล" required style={styles.input} onChange={handleChange} />
-          <input type="email" name="email" placeholder="อีเมล" required style={styles.input} onChange={handleChange} />
-          <input type="password" name="password" placeholder="รหัสผ่าน" required style={styles.input} onChange={handleChange} />
-          <input type="password" name="confirmPassword" placeholder="ยืนยันรหัสผ่าน" required style={styles.input} onChange={handleChange} />
-          <button type="submit" style={styles.button} className="hover-scale">ยืนยันการสมัคร</button>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Full Name</label>
+            <input name="name" placeholder="John Doe" className="input-ios" onChange={handleChange} required />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Email</label>
+            <input type="email" name="email" placeholder="john@example.com" className="input-ios" onChange={handleChange} required />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Password</label>
+            <input type="password" name="password" placeholder="Create a password" className="input-ios" onChange={handleChange} required />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Confirm Password</label>
+            <input type="password" name="confirmPassword" placeholder="Confirm password" className="input-ios" onChange={handleChange} required />
+          </div>
+          
+          <button type="submit" className="btn-ios btn-primary" style={{width: '100%', marginTop: '16px', padding: '16px'}}>
+            Create Account
+          </button>
         </form>
-        <Link to="/login" style={styles.link}>มีบัญชีอยู่แล้ว? <span style={{color: '#2E8B57', fontWeight: 'bold'}}>เข้าสู่ระบบ</span></Link>
+        
+        <div style={{marginTop: '24px', fontSize: '0.9rem', color: '#8E8E93'}}>
+          Already have an account? <Link to="/login" style={{color: '#007AFF', fontWeight: '600'}}>Sign in</Link>
+        </div>
       </div>
     </div>
   );

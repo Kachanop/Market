@@ -10,88 +10,62 @@ export default function CustomerHome({ markets }) {
   );
 
   const styles = {
-    container: { maxWidth: '1200px', margin: '0 auto', padding: '40px 20px', fontFamily: "'Inter', sans-serif" },
-    heroSection: {
-      textAlign: 'center', marginBottom: '50px', padding: '40px 20px',
-      background: 'linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%)',
-      borderRadius: '20px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', color: '#00695c'
-    },
-    heroTitle: {
-      fontSize: '2.5rem', fontWeight: '800', marginBottom: '10px',
-      background: 'linear-gradient(to right, #2E8B57, #20B2AA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-    },
-    searchContainer: { position: 'relative', maxWidth: '600px', margin: '0 auto' },
-    input: {
-      width: '100%', padding: '18px 25px', paddingLeft: '50px', borderRadius: '50px',
-      border: 'none', fontSize: '1.1rem', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', outline: 'none', transition: 'all 0.3s'
-    },
-    searchIcon: { position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem', color: '#888' },
-    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '30px' },
-    card: {
-      backgroundColor: 'white', borderRadius: '20px', overflow: 'hidden',
-      boxShadow: '0 10px 20px rgba(0,0,0,0.05)', cursor: 'pointer', position: 'relative', border: '1px solid #f0f0f0'
-    },
-    cardImage: { width: '100%', height: '220px', objectFit: 'cover' },
-    cardContent: { padding: '20px' },
-    cardTitle: { fontSize: '1.3rem', fontWeight: 'bold', color: '#333', marginBottom: '8px' },
-    cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px', color: '#666', fontSize: '0.9rem' },
-    btnBook: { padding: '8px 20px', backgroundColor: '#2E8B57', color: 'white', borderRadius: '20px', fontWeight: 'bold', fontSize: '0.9rem', border: 'none' }
-  };
-
-  const handleMarketClick = (marketId) => {
-    // ส่งไปหน้าจอง (ถ้ายังไม่ล็อกอิน App.jsx จะดีดไปหน้า Login ให้เอง)
-    navigate(`/customer/booking/${marketId}`);
+    container: { padding: '40px 20px 120px 20px', maxWidth: '1200px', margin: '0 auto' },
+    hero: { textAlign: 'center', marginBottom: '60px', position: 'relative' },
+    title: { fontSize: '3.5rem', fontWeight: '800', letterSpacing: '-1.5px', marginBottom: '10px', background: 'linear-gradient(180deg, #1C1C1E 0%, #3A3A3C 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+    subtitle: { fontSize: '1.2rem', color: '#8E8E93', marginBottom: '40px' },
+    searchWrapper: { position: 'relative', maxWidth: '500px', margin: '0 auto' },
+    searchIcon: { position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: '#8E8E93', fontSize: '1.2rem' },
+    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '40px' },
+    card: { borderRadius: '24px', background: 'white', overflow: 'hidden', position: 'relative', cursor: 'pointer', boxShadow: '0 10px 30px rgba(0,0,0,0.08)', transition: 'all 0.5s cubic-bezier(0.19, 1, 0.22, 1)', height: '450px', display: 'flex', flexDirection: 'column' },
+    cardImageContainer: { height: '55%', width: '100%', position: 'relative', overflow: 'hidden' },
+    cardImg: { width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' },
+    cardContent: { padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1, background: 'white' },
+    cardLabel: { fontSize: '0.8rem', fontWeight: '700', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' },
+    cardTitle: { fontSize: '1.6rem', fontWeight: '700', color: '#1C1C1E', marginBottom: '8px', lineHeight: 1.2 },
+    // 🔥 Style สำหรับรายละเอียดตลาด
+    cardDesc: { fontSize: '0.9rem', color: '#666', marginBottom: '15px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', lineHeight: 1.5 },
+    btnFloating: { padding: '8px 18px', background: '#F2F2F7', color: '#007AFF', fontWeight: '700', borderRadius: '20px', fontSize: '0.9rem', alignSelf: 'flex-start' }
   };
 
   return (
     <div style={styles.container}>
-      {/* Hero Section */}
-      <div style={styles.heroSection} className="anim-scale-in">
-        <h1 style={styles.heroTitle}>ค้นหาตลาดที่ใช่ ทำเลที่ชอบ</h1>
-        <p style={{fontSize: '1.1rem', marginBottom: '30px', opacity: 0.8}}>จองพื้นที่ขายของออนไลน์ได้ง่ายๆ ตลอด 24 ชั่วโมง</p>
-        <div style={styles.searchContainer}>
+      <div style={styles.hero} className="anim-fade">
+        <h1 style={styles.title}>MarketOS</h1>
+        <p style={styles.subtitle}>Discover the perfect space for your business.</p>
+        <div style={styles.searchWrapper}>
           <span style={styles.searchIcon}>🔍</span>
-          <input 
-            type="text" placeholder="ค้นหาชื่อตลาด..." style={styles.input}
-            value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={(e) => e.target.style.boxShadow = '0 6px 20px rgba(46, 139, 87, 0.2)'}
-            onBlur={(e) => e.target.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)'}
-          />
+          <input className="input-ios" placeholder="Search markets..." style={{paddingLeft: '50px', background: 'white', boxShadow: '0 4px 20px rgba(0,0,0,0.05)'}} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
       </div>
 
-      <h2 style={{color: '#444', marginBottom: '20px'}} className="anim-slide-up">
-        {searchTerm ? 'ผลการค้นหา' : 'ตลาดทั้งหมด'}
-      </h2>
-      
       <div style={styles.grid}>
-        {filteredMarkets.length > 0 ? (
-          filteredMarkets.map((market, index) => (
-            <div 
-              key={market.id} 
-              style={{...styles.card, animationDelay: `${index * 0.1}s`}} 
-              className="anim-slide-up hover-scale hover-shadow"
-              onClick={() => handleMarketClick(market.id)}
-            >
-              <img 
-                // ✅ แก้ไขตรงนี้: ลบ Syntax Markdown ออก ให้เหลือแค่ URL string
-                src={market.floors?.[0]?.image || 'https://via.placeholder.com/400x250?text=Market+Image'} 
-                alt={market.name} style={styles.cardImage} 
-              />
-              <div style={styles.cardContent}>
+        {filteredMarkets.length > 0 ? filteredMarkets.map((market, index) => (
+          <div key={market.id} style={{...styles.card, animationDelay: `${index * 0.1}s`}} className="anim-slide-up" onClick={() => navigate(`/customer/booking/${market.id}`)}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.02) translateY(-10px)'; e.currentTarget.style.boxShadow = '0 30px 60px rgba(0,0,0,0.12)'; e.currentTarget.querySelector('img').style.transform = 'scale(1.1)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)'; e.currentTarget.querySelector('img').style.transform = 'scale(1)'; }}
+          >
+            <div style={styles.cardImageContainer}>
+              <img src={market.image || market.floors?.[0]?.image || 'https://via.placeholder.com/400x250?text=No+Image'} alt={market.name} style={styles.cardImg} />
+              <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4))'}} />
+            </div>
+            
+            <div style={styles.cardContent}>
+              <div>
+                <div style={styles.cardLabel}>FEATURED MARKET</div>
                 <div style={styles.cardTitle}>{market.name}</div>
-                <div style={{color: '#888', fontSize: '0.9rem'}}>📍 ทำเลทอง ย่านชุมชน</div>
-                <div style={styles.cardFooter}>
-                  <span>{market.floors?.length || 0} ชั้น</span>
-                  <button style={styles.btnBook}>จองเลย ➝</button>
-                </div>
+                {/* 🔥 แสดงรายละเอียดตลาด */}
+                {market.description && <div style={styles.cardDesc}>{market.description}</div>}
+              </div>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                 <span style={{color:'#8E8E93', fontSize:'0.9rem'}}>{market.floors?.length || 0} Floors available</span>
+                 <span style={styles.btnFloating}>VIEW</span>
               </div>
             </div>
-          ))
-        ) : (
-          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '50px', color: '#888' }}>
-            <div style={{fontSize: '3rem', marginBottom: '10px'}}>😕</div>
-            <h3>ไม่พบตลาดที่คุณค้นหา</h3>
+          </div>
+        )) : (
+          <div style={{textAlign:'center', gridColumn:'1/-1', padding:'60px', color:'#8E8E93'}}>
+            <h2>No markets found.</h2>
           </div>
         )}
       </div>
