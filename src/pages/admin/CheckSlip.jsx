@@ -1,131 +1,108 @@
 import React, { useState } from 'react';
 
-// ✅ เพิ่ม export default ตรงนี้ เพื่อแก้ปัญหา Error ใน App.jsx
 export default function CheckSlip({ bookings, setBookings, markets }) {
-  const [selectedImg, setSelectedImg] = useState(null); // สำหรับเก็บ url รูปที่กดดูขยาย
-
-  // 1. กรองเฉพาะรายการที่สถานะเป็น 'paid' (รอตรวจสอบ)
+  const [selectedImg, setSelectedImg] = useState(null);
+  
+  // กรองเฉพาะรายการที่สถานะเป็น 'paid' (รอตรวจสอบ)
   const pendingBookings = bookings.filter(b => b.status === 'paid');
 
-  // 2. ฟังก์ชันอัปเดตสถานะ
-  const handleUpdateStatus = (bookingId, newStatus) => {
-    const confirmMsg = newStatus === 'approved' ? 'ยืนยันการอนุมัติ?' : 'ยืนยันการปฏิเสธ?';
-    if (!window.confirm(confirmMsg)) return;
-
-    const updatedBookings = bookings.map(b => {
-      if (b.id === bookingId) {
-        return { ...b, status: newStatus };
-      }
-      return b;
-    });
-
-    setBookings(updatedBookings);
-  };
-
-  // Helper หาชื่อตลาดจาก ID
-  const getMarketName = (id) => {
-    const market = markets?.find(m => m.id === id);
-    return market ? market.name : 'ไม่ระบุตลาด';
-  };
-
-  // --- Styles ---
-  const styles = {
-    container: { padding: '20px', backgroundColor: '#f4f6f9', minHeight: '100vh' },
-    header: { marginBottom: '20px', borderBottom: '2px solid #ddd', paddingBottom: '10px' },
-    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' },
-    card: { backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', overflow: 'hidden' },
-    cardHeader: { backgroundColor: '#0275d8', color: 'white', padding: '10px', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' },
-    cardBody: { padding: '15px' },
-    row: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px', borderBottom: '1px solid #eee', paddingBottom: '4px' },
-    slipThumbnail: { 
-      width: '100%', height: '200px', objectFit: 'cover', cursor: 'zoom-in', 
-      border: '1px solid #ddd', borderRadius: '5px', marginTop: '10px' 
-    },
-    actions: { display: 'flex', gap: '10px', marginTop: '15px' },
-    btnApprove: { flex: 1, backgroundColor: '#28a745', color: 'white', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' },
-    btnReject: { flex: 1, backgroundColor: '#dc3545', color: 'white', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' },
-    emptyState: { textAlign: 'center', marginTop: '50px', color: '#888' },
+  const handleUpdate = (id, status) => {
+    const action = status === 'approved' ? 'Approve' : 'Reject';
+    if (!window.confirm(`Confirm ${action} this payment?`)) return;
     
-    // Modal Styles (Popup ดูรูป)
-    modalOverlay: {
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999
+    // อัปเดตสถานะใน State หลัก
+    const updatedBookings = bookings.map(b => b.id === id ? { ...b, status } : b);
+    setBookings(updatedBookings);
+    
+    // บันทึกลง localStorage ทันที (เผื่อ App.jsx ยังไม่ sync หรือ user ปิดหน้าเว็บเร็ว)
+    localStorage.setItem('app_bookings', JSON.stringify(updatedBookings));
+  };
+
+  const styles = {
+    container: { padding: '20px', maxWidth: '1000px', margin: '0 auto' },
+    title: { fontSize: '2rem', fontWeight: '800', marginBottom: '30px', color: '#1C1C1E' },
+    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' },
+    card: {
+      background: 'white', borderRadius: '24px', padding: '20px',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.06)', position: 'relative', display: 'flex', flexDirection: 'column'
     },
-    modalImage: { maxWidth: '90%', maxHeight: '90%', borderRadius: '5px', boxShadow: '0 0 20px rgba(255,255,255,0.2)' }
+    imgContainer: {
+      width: '100%', height: '200px', borderRadius: '16px', marginBottom: '15px', 
+      overflow: 'hidden', cursor: 'zoom-in', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center'
+    },
+    img: { width: '100%', height: '100%', objectFit: 'contain' },
+    info: { flex: 1 },
+    actions: { display: 'flex', gap: '10px', marginTop: '15px' },
+    btn: (type) => ({
+      flex: 1, padding: '12px', borderRadius: '12px', border: 'none', fontWeight: '700', cursor: 'pointer',
+      background: type === 'approve' ? '#34C759' : '#FF3B30', color: 'white', transition: 'transform 0.1s'
+    }),
+    empty: { textAlign: 'center', color: '#8E8E93', marginTop: '50px', fontSize: '1.2rem' }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h2>💰 ตรวจสอบสลิปการโอนเงิน</h2>
-        <p>รายการที่ลูกค้ายืนยันการโอนแล้ว ({pendingBookings.length} รายการ)</p>
-      </div>
-
+    <div style={styles.container} className="anim-fade">
+      <h1 style={styles.title}>Verify Payments ({pendingBookings.length})</h1>
+      
       {pendingBookings.length === 0 ? (
-        <div style={styles.emptyState}>
-          <h3>✅ ไม่มีรายการรอตรวจสอบ</h3>
-          <p>คุณจัดการครบทุกรายการแล้ว</p>
-        </div>
+        <div style={styles.empty}>✅ All caught up! No pending slips.</div>
       ) : (
         <div style={styles.grid}>
           {pendingBookings.map(item => (
-            <div key={item.id} style={styles.card}>
-              <div style={styles.cardHeader}>
-                <span>Order #{item.id}</span>
-                <span>฿{item.price.toLocaleString()}</span>
-              </div>
-              
-              <div style={styles.cardBody}>
-                <div style={styles.row}>
-                  <strong>ตลาด:</strong> <span>{getMarketName(item.marketId)}</span>
+             <div key={item.id} style={styles.card} className="anim-scale">
+                <div style={styles.imgContainer} onClick={() => setSelectedImg(item.slipImage)}>
+                   {item.slipImage ? (
+                     <img src={item.slipImage} style={styles.img} alt="Slip" />
+                   ) : (
+                     <span style={{color:'#999'}}>No Image</span>
+                   )}
                 </div>
-                <div style={styles.row}>
-                  <strong>ล็อก:</strong> <span>{item.lockId} (ชั้น {item.floorNumber})</span>
-                </div>
-                <div style={styles.row}>
-                  <strong>วันที่จอง:</strong> <span style={{fontSize: '0.9rem'}}>{item.dates}</span>
-                </div>
-
-                <div style={{ textAlign: 'center' }}>
-                  <small style={{ color: '#666' }}>คลิกที่รูปเพื่อดูภาพขยาย</small>
-                  {item.slipImage ? (
-                    <img 
-                      src={item.slipImage} 
-                      alt="slip" 
-                      style={styles.slipThumbnail}
-                      onClick={() => setSelectedImg(item.slipImage)}
-                    />
-                  ) : (
-                    <div style={{...styles.slipThumbnail, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0'}}>
-                      ไม่มีไฟล์แนบ
-                    </div>
-                  )}
+                
+                <div style={styles.info}>
+                  <div style={{display:'flex', justifyContent:'space-between', marginBottom:'5px', alignItems:'center'}}>
+                     <span style={{fontWeight:'700', fontSize:'1.1rem'}}>#{item.id}</span>
+                     <span style={{color:'#007AFF', fontWeight:'800', fontSize:'1.2rem'}}>฿{item.price.toLocaleString()}</span>
+                  </div>
+                  <div style={{fontSize:'0.9rem', color:'#8E8E93', marginBottom:'4px'}}>
+                     📍 {markets.find(m => m.id === item.marketId)?.name}
+                  </div>
+                  <div style={{fontSize:'0.9rem', color:'#3A3A3C'}}>
+                     🔐 Lock: <b>{item.lockId}</b> (Floor {item.floorNumber})
+                  </div>
+                  <div style={{fontSize:'0.8rem', color:'#8E8E93', marginTop:'4px'}}>
+                     📅 {item.dates}
+                  </div>
                 </div>
 
                 <div style={styles.actions}>
-                  <button 
-                    style={styles.btnApprove}
-                    onClick={() => handleUpdateStatus(item.id, 'approved')}
-                  >
-                    อนุมัติ ✅
-                  </button>
-                  <button 
-                    style={styles.btnReject}
-                    onClick={() => handleUpdateStatus(item.id, 'rejected')}
-                  >
-                    ปฏิเสธ ❌
-                  </button>
+                   <button 
+                     style={styles.btn('approve')} 
+                     onClick={() => handleUpdate(item.id, 'approved')}
+                     onMouseDown={e => e.target.style.transform = 'scale(0.95)'}
+                     onMouseUp={e => e.target.style.transform = 'scale(1)'}
+                   >
+                     Approve
+                   </button>
+                   <button 
+                     style={styles.btn('reject')} 
+                     onClick={() => handleUpdate(item.id, 'rejected')}
+                     onMouseDown={e => e.target.style.transform = 'scale(0.95)'}
+                     onMouseUp={e => e.target.style.transform = 'scale(1)'}
+                   >
+                     Reject
+                   </button>
                 </div>
-              </div>
-            </div>
+             </div>
           ))}
         </div>
       )}
 
-      {/* Modal ดูรูปขยาย */}
       {selectedImg && (
-        <div style={styles.modalOverlay} onClick={() => setSelectedImg(null)}>
-          <img src={selectedImg} style={styles.modalImage} alt="Full Slip" />
+        <div 
+          style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.8)', zIndex:9999, display:'flex', justifyContent:'center', alignItems:'center', cursor:'zoom-out'}} 
+          onClick={() => setSelectedImg(null)}
+        >
+           <img src={selectedImg} style={{maxWidth:'90%', maxHeight:'90%', borderRadius:'12px', boxShadow:'0 20px 50px rgba(0,0,0,0.5)'}} />
         </div>
       )}
     </div>

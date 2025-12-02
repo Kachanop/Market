@@ -1,44 +1,164 @@
-/* ... (โค้ดเดิมด้านบน) ... */
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* --- Animation Classes --- */
+:root {
+  /* iOS Color Palette */
+  --ios-bg: #F2F2F7;
+  --ios-card: #FFFFFF;
+  --ios-text-primary: #000000;
+  --ios-text-secondary: #8E8E93;
+  --ios-blue: #007AFF;
+  --ios-green: #34C759;
+  --ios-red: #FF3B30;
+  --ios-gray: #E5E5EA;
+  --ios-glass: rgba(255, 255, 255, 0.75);
+  --ios-glass-border: rgba(255, 255, 255, 0.5);
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+  
+  /* Radius */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --radius-full: 9999px;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--ios-bg);
+  color: var(--ios-text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Utilities --- */
+
+/* Glassmorphism Effect */
+.glass {
+  background: var(--ios-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--ios-glass-border);
+}
+
+.card-ios {
+  background: var(--ios-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.card-ios:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Buttons */
+.btn-ios {
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--ios-blue);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.btn-primary:hover {
+  background: #0062cc;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
+}
+
+.btn-secondary {
+  background: var(--ios-gray);
+  color: var(--ios-text-primary);
+}
+
+.btn-secondary:hover {
+  background: #d1d1d6;
+}
+
+/* Inputs */
+.input-ios {
+  width: 100%;
+  padding: 16px;
+  background: #F2F2F7;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.input-ios:focus {
+  background: white;
+  border-color: var(--ios-blue);
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+}
+
+/* --- Animations --- */
+
+/* Fade In */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
+/* Slide Up with Bounce */
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(40px); }
+  60% { opacity: 1; transform: translateY(-5px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
+/* Scale In */
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
 
-.anim-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
-}
+.anim-fade { animation: fadeIn 0.8s ease-out forwards; }
+.anim-slide-up { animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.anim-scale { animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-.anim-slide-up {
-  animation: slideUp 0.6s ease-out forwards;
-}
+/* Staggered Delay for lists */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
 
-.anim-scale-in {
-  animation: scaleIn 0.4s ease-out forwards;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
-
-/* Hover Effects */
-.hover-scale {
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
-.hover-scale:hover {
-  transform: translateY(-5px) scale(1.02);
+::-webkit-scrollbar-thumb {
+  background: #C1C1C5;
+  border-radius: 10px;
 }
-
-.hover-shadow {
-  transition: box-shadow 0.3s ease;
-}
-.hover-shadow:hover {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+::-webkit-scrollbar-thumb:hover {
+  background: #A0A0A5;
 }

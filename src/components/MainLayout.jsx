@@ -1,31 +1,38 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
-import Navbar from './Navbar';
 
 const MainLayout = ({ user, onLogout }) => {
   return (
-    <div>
-      {/* ส่วนหัวและเมนู (แสดงทุกหน้าเมื่อ Login แล้ว) */}
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column',
+      width: '100%', 
+      overflowX: 'hidden' 
+    }}>
       <Header user={user} onLogout={onLogout} />
-      <Navbar user={user} />
       
-      {/* Outlet คือจุดที่ React Router จะเอาเนื้อหาของแต่ละหน้ามาแสดง */}
-      <div style={{ minHeight: '80vh', position: 'relative' }}>
+      <div style={{ 
+        flex: 1, 
+        position: 'relative', 
+        width: '100%',
+        paddingBottom: '40px' 
+      }}>
         <Outlet />
       </div>
-      
-      {/* Footer (ส่วนท้ายเว็บ) */}
+
       <footer style={{ 
         textAlign: 'center', 
-        padding: '20px', 
-        color: '#888', 
+        padding: '24px 20px', 
+        color: '#8E8E93', 
         fontSize: '0.8rem',
-        backgroundColor: '#f8f9fa',
-        borderTop: '1px solid #ddd',
-        marginTop: 'auto'
+        marginTop: 'auto', 
+        background: 'rgba(255,255,255,0.5)',
+        backdropFilter: 'blur(10px)',
+        borderTop: '1px solid rgba(0,0,0,0.05)'
       }}>
-        © 2023 ระบบจองล็อกตลาดออนไลน์
+        <p>© 2025 MarketOS. All rights reserved.</p>
       </footer>
     </div>
   );
