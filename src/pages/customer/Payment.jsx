@@ -72,8 +72,8 @@ export default function Payment({ bookings, setBookings, markets }) {
     row: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', color: '#3A3A3C' },
 
     uploadBtn: {
-      display: 'block', width: '100%', padding: '16px', border: '2px dashed #C7C7CC', borderRadius: '16px',
-      color: '#8E8E93', cursor: 'pointer', marginBottom: '20px', background: 'white', position: 'relative', overflow: 'hidden'
+      display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '16px', border: '2px dashed #C7C7CC', borderRadius: '16px',
+      color: '#8E8E93', cursor: 'pointer', marginBottom: '20px', background: 'white', position: 'relative', overflow: 'hidden', boxSizing: 'border-box'
     },
     confirmBtn: {
       width: '100%', padding: '16px', background: '#34C759', color: 'white', borderRadius: '16px',
