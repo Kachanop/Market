@@ -6,14 +6,18 @@ export default function Login({ setUser, users }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // ตรวจสอบข้อมูลการเข้าสู่ระบบ
   const handleLogin = (e) => {
     e.preventDefault();
+    // ค้นหาผู้ใช้จากอีเมลและรหัสผ่าน
     const foundUser = users.find(u => u.email === email && u.password === password);
-    
+
     if (foundUser) {
       let activeUser = { ...foundUser };
+      // กำหนดสิทธิ์ Admin ถ้าอีเมลลงท้ายด้วย @admin.com
       if (activeUser.email.endsWith('@admin.com')) activeUser.role = 'admin';
       setUser(activeUser);
+      // เปลี่ยนหน้าไปตามสิทธิ์ผู้ใช้
       navigate(activeUser.role === 'admin' ? '/admin' : '/');
     } else {
       alert("❌ Incorrect email or password");
@@ -54,7 +58,7 @@ export default function Login({ setUser, users }) {
     title: { fontSize: '2rem', fontWeight: '800', marginBottom: '8px', color: '#1C1C1E' },
     subtitle: { color: '#8E8E93', marginBottom: '32px' },
     formGroup: { marginBottom: '20px', textAlign: 'left' },
-    label: { display:'block', fontSize:'0.9rem', fontWeight:'600', marginBottom:'8px', color:'#3A3A3C', marginLeft:'4px' },
+    label: { display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '8px', color: '#3A3A3C', marginLeft: '4px' },
     footerLink: { marginTop: '24px', fontSize: '0.9rem', color: '#8E8E93' }
   };
 
@@ -68,28 +72,28 @@ export default function Login({ setUser, users }) {
         <form onSubmit={handleLogin}>
           <div style={styles.formGroup}>
             <label style={styles.label}>Email</label>
-            <input 
+            <input
               type="email" placeholder="user@mail.com" className="input-ios"
-              value={email} onChange={e => setEmail(e.target.value)} required 
-              style={{ textAlign: 'left', boxSizing: 'border-box' }} 
+              value={email} onChange={e => setEmail(e.target.value)} required
+              style={{ textAlign: 'left', boxSizing: 'border-box' }}
             />
           </div>
           <div style={styles.formGroup}>
             <label style={styles.label}>Password</label>
-            <input 
+            <input
               type="password" placeholder="•••••••" className="input-ios"
-              value={password} onChange={e => setPassword(e.target.value)} required 
-              style={{ textAlign: 'left', boxSizing: 'border-box' }} 
+              value={password} onChange={e => setPassword(e.target.value)} required
+              style={{ textAlign: 'left', boxSizing: 'border-box' }}
             />
           </div>
-          
-          <button type="submit" className="btn-ios btn-primary" style={{width: '100%', marginTop: '10px', padding: '16px'}}>
+
+          <button type="submit" className="btn-ios btn-primary" style={{ width: '100%', marginTop: '10px', padding: '16px' }}>
             Sign In
           </button>
         </form>
 
         <div style={styles.footerLink}>
-          Don't have an account? <Link to="/register" style={{color: '#007AFF', fontWeight: '600'}}>Sign up</Link>
+          Don't have an account? <Link to="/register" style={{ color: '#007AFF', fontWeight: '600' }}>Sign up</Link>
         </div>
       </div>
     </div>
