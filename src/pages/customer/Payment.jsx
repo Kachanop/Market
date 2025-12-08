@@ -7,13 +7,13 @@ export default function Payment({ bookings, setBookings, markets }) {
   const [previewImg, setPreviewImg] = useState(null);
 
   const booking = bookings.find(b => b.id === parseInt(bookingId));
-  
-  // Validation: ถ้าไม่เจอ หรือสถานะไม่ใช่ pending ให้เด้งกลับ
-  if (!booking) return <div style={{padding:40, textAlign:'center'}}>Booking not found</div>;
+
+  // Validation: ถ้าไม่เจอ หรือสถานะไม่ใช่ pending ให้เด้งกลับ (ป้องกันการจ่ายซ้ำ)
+  if (!booking) return <div style={{ padding: 40, textAlign: 'center' }}>Booking not found</div>;
   if (booking.status !== 'pending_payment' && booking.status !== 'rejected') {
-      return <div style={{padding:40, textAlign:'center'}}>Already paid or approved.</div>;
+    return <div style={{ padding: 40, textAlign: 'center' }}>Already paid or approved.</div>;
   }
-  
+
   const market = markets.find(m => m.id === booking.marketId);
 
   // 🔥 Helper: ฟังก์ชันแปลงไฟล์เป็น Base64
@@ -26,6 +26,7 @@ export default function Payment({ bookings, setBookings, markets }) {
     });
   };
 
+  // จัดการการอัปโหลดรูปภาพสลิป
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -44,14 +45,15 @@ export default function Payment({ bookings, setBookings, markets }) {
     }
   };
 
+  // บันทึกการชำระเงิน
   const handleSubmit = () => {
     if (!previewImg) return alert("Please upload slip.");
-    
+
     // อัปเดตข้อมูลการจองจริงใน State
-    const updatedBookings = bookings.map(b => 
+    const updatedBookings = bookings.map(b =>
       b.id === booking.id ? { ...b, status: 'paid', slipImage: previewImg } : b
     );
-    
+
     setBookings(updatedBookings);
     alert("✅ Payment Submitted! Waiting for approval.");
     navigate('/customer/my-bookings');
@@ -65,10 +67,10 @@ export default function Payment({ bookings, setBookings, markets }) {
     },
     title: { fontSize: '1.8rem', fontWeight: '800', marginBottom: '20px', color: '#1C1C1E' },
     amount: { fontSize: '2.5rem', fontWeight: '800', color: '#007AFF', marginBottom: '30px' },
-    
+
     box: { background: '#F2F2F7', padding: '20px', borderRadius: '20px', marginBottom: '20px', textAlign: 'left' },
     row: { display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.9rem', color: '#3A3A3C' },
-    
+
     uploadBtn: {
       display: 'block', width: '100%', padding: '16px', border: '2px dashed #C7C7CC', borderRadius: '16px',
       color: '#8E8E93', cursor: 'pointer', marginBottom: '20px', background: 'white', position: 'relative', overflow: 'hidden'
@@ -85,22 +87,22 @@ export default function Payment({ bookings, setBookings, markets }) {
       <div style={styles.card} className="anim-scale">
         <h2 style={styles.title}>Confirm Payment</h2>
         <div style={styles.amount}>฿{booking.price.toLocaleString()}</div>
-        
+
         <div style={styles.box}>
-           <div style={styles.row}><span>Market</span> <b>{market?.name}</b></div>
-           <div style={styles.row}><span>Lock</span> <b>{booking.lockId}</b></div>
-           <hr style={{border:'0', borderBottom:'1px solid #E5E5EA', margin:'10px 0'}}/>
-           <div style={{fontSize:'0.8rem', color:'#8E8E93', textAlign:'center'}}>Transfer to: KBANK 123-4-56789-0</div>
+          <div style={styles.row}><span>Market</span> <b>{market?.name}</b></div>
+          <div style={styles.row}><span>Lock</span> <b>{booking.lockId}</b></div>
+          <hr style={{ border: '0', borderBottom: '1px solid #E5E5EA', margin: '10px 0' }} />
+          <div style={{ fontSize: '0.8rem', color: '#8E8E93', textAlign: 'center' }}>Transfer to: KBANK 123-4-56789-0</div>
         </div>
 
         <label style={styles.uploadBtn}>
-           {previewImg ? 'Tap to Change Slip' : 'Tap to Upload Slip'}
-           <input type="file" hidden accept="image/*" onChange={handleFileChange} />
+          {previewImg ? 'Tap to Change Slip' : 'Tap to Upload Slip'}
+          <input type="file" hidden accept="image/*" onChange={handleFileChange} />
         </label>
 
         {previewImg && (
-          <div style={{marginBottom: '20px', borderRadius:'12px', overflow:'hidden', border:'1px solid #eee'}}>
-            <img src={previewImg} style={{width:'100%', display:'block'}} alt="Slip Preview" />
+          <div style={{ marginBottom: '20px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #eee' }}>
+            <img src={previewImg} style={{ width: '100%', display: 'block' }} alt="Slip Preview" />
           </div>
         )}
 

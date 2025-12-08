@@ -5,7 +5,8 @@ export default function CustomerHome({ markets }) {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredMarkets = markets.filter(market => 
+  // กรองตลาดตามชื่อที่ผู้ใช้ค้นหา
+  const filteredMarkets = markets.filter(market =>
     market.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -35,21 +36,21 @@ export default function CustomerHome({ markets }) {
         <p style={styles.subtitle}>Discover the perfect space for your business.</p>
         <div style={styles.searchWrapper}>
           <span style={styles.searchIcon}>🔍</span>
-          <input className="input-ios" placeholder="Search markets..." style={{paddingLeft: '50px', background: 'white', boxShadow: '0 4px 20px rgba(0,0,0,0.05)'}} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          <input className="input-ios" placeholder="Search markets..." style={{ paddingLeft: '50px', background: 'white', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
       </div>
 
       <div style={styles.grid}>
         {filteredMarkets.length > 0 ? filteredMarkets.map((market, index) => (
-          <div key={market.id} style={{...styles.card, animationDelay: `${index * 0.1}s`}} className="anim-slide-up" onClick={() => navigate(`/customer/booking/${market.id}`)}
+          <div key={market.id} style={{ ...styles.card, animationDelay: `${index * 0.1}s` }} className="anim-slide-up" onClick={() => navigate(`/customer/booking/${market.id}`)}
             onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.02) translateY(-10px)'; e.currentTarget.style.boxShadow = '0 30px 60px rgba(0,0,0,0.12)'; e.currentTarget.querySelector('img').style.transform = 'scale(1.1)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)'; e.currentTarget.querySelector('img').style.transform = 'scale(1)'; }}
           >
             <div style={styles.cardImageContainer}>
               <img src={market.image || market.floors?.[0]?.image || 'https://via.placeholder.com/400x250?text=No+Image'} alt={market.name} style={styles.cardImg} />
-              <div style={{position:'absolute', top:0, left:0, right:0, bottom:0, background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4))'}} />
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4))' }} />
             </div>
-            
+
             <div style={styles.cardContent}>
               <div>
                 <div style={styles.cardLabel}>FEATURED MARKET</div>
@@ -57,14 +58,14 @@ export default function CustomerHome({ markets }) {
                 {/* 🔥 แสดงรายละเอียดตลาด */}
                 {market.description && <div style={styles.cardDesc}>{market.description}</div>}
               </div>
-              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                 <span style={{color:'#8E8E93', fontSize:'0.9rem'}}>{market.floors?.length || 0} Floors available</span>
-                 <span style={styles.btnFloating}>VIEW</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#8E8E93', fontSize: '0.9rem' }}>{market.floors?.length || 0} Floors available</span>
+                <span style={styles.btnFloating}>VIEW</span>
               </div>
             </div>
           </div>
         )) : (
-          <div style={{textAlign:'center', gridColumn:'1/-1', padding:'60px', color:'#8E8E93'}}>
+          <div style={{ textAlign: 'center', gridColumn: '1/-1', padding: '60px', color: '#8E8E93' }}>
             <h2>No markets found.</h2>
           </div>
         )}

@@ -7,14 +7,14 @@ const Header = ({ user, onLogout }) => {
   const isAdmin = user?.role === 'admin';
   const [scrolled, setScrolled] = useState(false);
 
-  // Detect Scroll
+  // ตรวจจับการเลื่อนหน้าจอ (Scroll Detection) เพื่อเปลี่ยนสไตล์ของ Header
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Navigation Config
+  // กำหนดรายการเมนูนำทาง (Navigation Items) ตามบทบาทของผู้ใช้ (Admin/User)
   const navItems = isAdmin ? [
     { to: '/admin', label: 'Dashboard', icon: '📊' },
     { to: '/admin/manage-market', label: 'Manage', icon: '⚙️' },
@@ -25,6 +25,7 @@ const Header = ({ user, onLogout }) => {
   ];
 
   const styles = {
+    // สไตล์ของ Header หลัก
     header: {
       position: 'sticky',
       top: 0,
@@ -40,14 +41,14 @@ const Header = ({ user, onLogout }) => {
       borderBottom: scrolled ? '1px solid rgba(0,0,0,0.05)' : '1px solid transparent',
       boxShadow: scrolled ? '0 4px 30px rgba(0, 0, 0, 0.03)' : 'none',
     },
-    // Left: Logo
+    // ส่วนซ้าย: โลโก้
     leftSection: {
       display: 'flex',
       alignItems: 'center',
       gap: '12px',
       cursor: 'pointer',
     },
-    // Right: Nav + User
+    // ส่วนขวา: เมนูและข้อมูลผู้ใช้
     rightSection: {
       display: 'flex',
       alignItems: 'center',
@@ -134,16 +135,18 @@ const Header = ({ user, onLogout }) => {
 
   return (
     <header style={styles.header} className="anim-slide-up">
+      {/* ส่วนโลโก้ - คลิกแล้วกลับหน้าแรก */}
       <div style={styles.leftSection} onClick={() => navigate(isAdmin ? '/admin' : '/')}>
         <div style={styles.logoIcon}>
           {isAdmin ? '🛡️' : '🛍️'}
         </div>
         <div>
-          <div style={styles.logoText}>MarketOS <span style={{opacity:0.4, fontWeight:400}}>26</span></div>
+          <div style={styles.logoText}>MarketOS <span style={{ opacity: 0.4, fontWeight: 400 }}>26</span></div>
         </div>
       </div>
 
       <div style={styles.rightSection}>
+        {/* เมนูนำทางด้านบน */}
         <nav style={styles.nav}>
           {navItems.map((item) => {
             const isActive = location.pathname === item.to || (item.to !== '/' && item.to !== '/admin' && location.pathname.startsWith(item.to));
@@ -156,6 +159,7 @@ const Header = ({ user, onLogout }) => {
           })}
         </nav>
 
+        {/* ส่วนแสดงข้อมูลผู้ใช้และปุ่ม Logout */}
         <div style={styles.userActions}>
           {user ? (
             <>
@@ -163,8 +167,8 @@ const Header = ({ user, onLogout }) => {
                 <div style={styles.avatar}>{user.name.charAt(0)}</div>
                 <span>{user.name.split(' ')[0]}</span>
               </div>
-              <button 
-                style={styles.logoutBtn} 
+              <button
+                style={styles.logoutBtn}
                 onClick={onLogout}
                 onMouseEnter={(e) => e.target.style.background = 'rgba(255, 59, 48, 0.1)'}
                 onMouseLeave={(e) => e.target.style.background = 'transparent'}
@@ -174,10 +178,10 @@ const Header = ({ user, onLogout }) => {
             </>
           ) : (
             <>
-              <button className="btn-ios" style={{background:'transparent', color:'#007AFF', padding:'8px 16px', fontSize:'0.9rem'}} onClick={() => navigate('/login')}>
+              <button className="btn-ios" style={{ background: 'transparent', color: '#007AFF', padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => navigate('/login')}>
                 Log In
               </button>
-              <button className="btn-ios btn-primary" style={{padding:'8px 20px', fontSize:'0.9rem'}} onClick={() => navigate('/register')}>
+              <button className="btn-ios btn-primary" style={{ padding: '8px 20px', fontSize: '0.9rem' }} onClick={() => navigate('/register')}>
                 Sign Up
               </button>
             </>

@@ -7,14 +7,18 @@ export default function Register({ users, setUsers }) {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  // ลงทะเบียนผู้ใช้ใหม่
   const handleRegister = (e) => {
     e.preventDefault();
+    // ตรวจสอบความถูกต้องของข้อมูล
     if (formData.password !== formData.confirmPassword) return alert("❌ Passwords do not match");
     if (users.find(u => u.email === formData.email)) return alert("❌ Email already exists");
 
+    // กำหนดสิทธิ์เริ่มต้น (ถ้าอีเมล @admin.com จะได้เป็น admin ทันทีสำหรับการทดสอบ)
     const role = formData.email.endsWith('@admin.com') ? 'admin' : 'customer';
     const newUser = { id: Date.now(), ...formData, role };
 
+    // บันทึกผู้ใช้ใหม่และแจ้งเตือน
     setUsers([...users, newUser]);
     alert("✅ Account created successfully!");
     navigate('/login');
@@ -41,7 +45,7 @@ export default function Register({ users, setUsers }) {
     title: { fontSize: '2rem', fontWeight: '800', marginBottom: '8px', color: '#1C1C1E' },
     subtitle: { color: '#8E8E93', marginBottom: '32px' },
     formGroup: { marginBottom: '16px', textAlign: 'left' },
-    label: { display:'block', fontSize:'0.9rem', fontWeight:'600', marginBottom:'8px', color:'#3A3A3C', marginLeft:'4px' },
+    label: { display: 'block', fontSize: '0.9rem', fontWeight: '600', marginBottom: '8px', color: '#3A3A3C', marginLeft: '4px' },
   };
 
   return (
@@ -67,14 +71,14 @@ export default function Register({ users, setUsers }) {
             <label style={styles.label}>Confirm Password</label>
             <input type="password" name="confirmPassword" placeholder="Confirm password" className="input-ios" onChange={handleChange} required />
           </div>
-          
-          <button type="submit" className="btn-ios btn-primary" style={{width: '100%', marginTop: '16px', padding: '16px'}}>
+
+          <button type="submit" className="btn-ios btn-primary" style={{ width: '100%', marginTop: '16px', padding: '16px' }}>
             Create Account
           </button>
         </form>
-        
-        <div style={{marginTop: '24px', fontSize: '0.9rem', color: '#8E8E93'}}>
-          Already have an account? <Link to="/login" style={{color: '#007AFF', fontWeight: '600'}}>Sign in</Link>
+
+        <div style={{ marginTop: '24px', fontSize: '0.9rem', color: '#8E8E93' }}>
+          Already have an account? <Link to="/login" style={{ color: '#007AFF', fontWeight: '600' }}>Sign in</Link>
         </div>
       </div>
     </div>
