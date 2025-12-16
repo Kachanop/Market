@@ -39,8 +39,8 @@ export default function AdminHome({ bookings, markets }) {
         const floor = market.floors?.find(f => f.floorNumber === b.floorNumber);
         const lock = floor?.locks?.find(l => l.id === b.lockId);
         // ถ้าไม่มีชื่อโซน ให้ใช้ชื่อ Default
-        const zoneName = lock?.zone ? lock.zone : 'General Zone';
-        const key = `${market.name} (${zoneName})`;
+        const zoneName = lock?.zone ? `Zone ${lock.zone}` : 'General Zone';
+        const key = `${market.name} ${zoneName}`;
         zoneStats[key] = (zoneStats[key] || 0) + 1;
       }
     }

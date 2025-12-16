@@ -14,13 +14,8 @@ function App() {
     return saved ? JSON.parse(saved) : initialUsers;
   });
 
-  // ใช้ Session Storage สำหรับ Current User เพื่อให้ Login ค้างอยู่เฉพาะ Session นี้
-  // หรือใช้ Local Storage ถ้าอยากให้ "Remember Me"
-  // ดึงข้อมูลผู้ใช้งานที่ล็อกอินอยู่ปัจจุบัน
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('app_current_user'); // เปลี่ยนเป็น Local Storage เพื่อความสะดวก
-    return saved ? JSON.parse(saved) : null;
-  });
+  // ดึงข้อมูลผู้ใช้งานที่ล็อกอินอยู่ปัจจุบัน (ไม่ต้องจำค่า ใช้ null เสมอเมื่อเริ่มใหม่)
+  const [user, setUser] = useState(null);
 
   // ดึงข้อมูลตลาดจาก Local Storage
   const [markets, setMarkets] = useState(() => {
@@ -38,11 +33,7 @@ function App() {
   // บันทึกข้อมูลผู้ใช้งานลง Local Storage ทุกครั้งที่มีการเปลี่ยนแปลง
   useEffect(() => { localStorage.setItem('app_users', JSON.stringify(users)); }, [users]);
 
-  // บันทึกข้อมูลผู้ใช้งานที่ล็อกอินอยู่ลง Local Storage (หรือลบออกถ้าล็อกเอาท์)
-  useEffect(() => {
-    if (user) localStorage.setItem('app_current_user', JSON.stringify(user));
-    else localStorage.removeItem('app_current_user');
-  }, [user]);
+  // (ลบ useEffect สำหรับบันทึก app_current_user ออก เพื่อไม่ให้จำค่า)
 
   // บันทึกข้อมูลตลาดลง Local Storage ทุกครั้งที่มีการเปลี่ยนแปลง
   useEffect(() => { localStorage.setItem('app_markets', JSON.stringify(markets)); }, [markets]);
@@ -53,7 +44,6 @@ function App() {
   // ฟังก์ชันสำหรับออกจากระบบ (Logout)
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem('app_current_user');
   };
 
   return (
